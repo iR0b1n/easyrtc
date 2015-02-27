@@ -28,14 +28,13 @@ request.post('https://api.xirsys.com/getIceServers', {
     application: "default",
     room: "default",
     secure: 1
+    },
   },
-},
 function (error, response, body) {
-  if (!error &amp;&amp; response.statusCode == 200) {
+  if (!error && response.statusCode == 200) {
     // body.d.iceServers is where the array of ICE servers lives
     iceConfig = body.d.iceServers;  
     console.log(iceConfig);
     callback(null, iceConfig);
   }
-});
 });
