@@ -9,10 +9,33 @@ var httpApp = express();
 httpApp.use(express.static(__dirname + "/static/"));
 
 // Start Express http server on port 8080
-var webServer = http.createServer(httpApp).listen(8080);
+var webServer = http.createServer(httpApp).listen(80);
 
 // Start Socket.io so it attaches itself to Express server
 var socketServer = io.listen(webServer, {"log level":1});
 
 // Start EasyRTC server
 var rtc = easyrtc.listen(httpApp, socketServer);
+
+// This object will take in an array of XirSys STUN and TURN servers
+var iceConfig = [];
+ 
+request.post('https://api.xirsys.com/getIceServers', {
+  form: {
+    ident: "&lt; Your username (not your email) &gt;",
+    secret: "&lt; Your secret API token &gt;",
+    domain: "&lt; www.yourdomain.com &gt;",
+    application: "default",
+    room: "default",
+    secure: 1
+  },
+},
+function (error, response, body) {
+  if (!error &amp;&amp; response.statusCode == 200) {
+    // body.d.iceServers is where the array of ICE servers lives
+    iceConfig = body.d.iceServers;  
+    console.log(iceConfig);
+    callback(null, iceConfig);
+  }
+});
+});
